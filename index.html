@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Frisbee training video library" />
+  <title>Frisbee Training</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <p class="eyebrow">ULTIMATE FRISBEE</p>
+      <h1>Frisbee Training</h1>
+      <p class="subtitle">整理團練影片、球員與對戰組合。</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="filters" aria-label="影片篩選">
+      <div class="filter-group">
+        <label for="formatFilter">形式</label>
+        <select id="formatFilter">
+          <option value="all">全部</option>
+          <option value="3v3">3v3</option>
+          <option value="4v4">4v4</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="groupFilter">組別</label>
+        <select id="groupFilter">
+          <option value="all">全部</option>
+          <option value="第一組">第一組</option>
+          <option value="第二組">第二組</option>
+          <option value="第一組 vs 第二組">第一組 vs 第二組</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="playerFilter">球員</label>
+        <select id="playerFilter">
+          <option value="all">全部</option>
+        </select>
+      </div>
+
+      <div class="filter-group search-group">
+        <label for="searchInput">搜尋</label>
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="搜尋標題、球員或註解..."
+        />
+      </div>
+
+      <button id="resetFilters" class="reset-button" type="button">
+        清除篩選
+      </button>
+    </section>
+
+    <section class="results-header">
+      <h2>訓練影片</h2>
+      <p id="resultCount"></p>
+    </section>
+
+    <section id="videoGrid" class="video-grid" aria-live="polite"></section>
+
+    <section id="emptyState" class="empty-state" hidden>
+      <h3>找不到符合條件的影片</h3>
+      <p>試著清除篩選，或在 videos.js 新增更多影片。</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>FrisbeeTraining · GitHub Pages</p>
+    </div>
+  </footer>
+
+  <script src="videos.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
