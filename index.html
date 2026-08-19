@@ -12,62 +12,295 @@
     <div class="container">
       <p class="eyebrow">ULTIMATE FRISBEE</p>
       <h1>Frisbee Training</h1>
-      <p class="subtitle">整理團練影片、球員與對戰組合。</p>
+      <p class="subtitle">建立、分類、整理日常訓練與對抗影片。</p>
     </div>
   </header>
 
   <main class="container">
-    <section class="filters" aria-label="影片篩選">
-      <div class="filter-group">
-        <label for="formatFilter">形式</label>
-        <select id="formatFilter">
-          <option value="all">全部</option>
-          <option value="3v3">3v3</option>
-          <option value="4v4">4v4</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label for="groupFilter">組別</label>
-        <select id="groupFilter">
-          <option value="all">全部</option>
-          <option value="第一組">第一組</option>
-          <option value="第二組">第二組</option>
-          <option value="第一組 vs 第二組">第一組 vs 第二組</option>
-        </select>
-      </div>
-
-      <div class="filter-group">
-        <label for="playerFilter">球員</label>
-        <select id="playerFilter">
-          <option value="all">全部</option>
-        </select>
-      </div>
-
-      <div class="filter-group search-group">
-        <label for="searchInput">搜尋</label>
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="搜尋標題、球員或註解..."
-        />
-      </div>
-
-      <button id="resetFilters" class="reset-button" type="button">
-        清除篩選
+    <!-- CREATE VIDEO LAUNCHER -->
+    <section class="create-launcher">
+      <button id="openCreatorButton" class="add-video-button" type="button">
+        ＋ 新增影片
       </button>
     </section>
 
-    <section class="results-header">
-      <h2>訓練影片</h2>
-      <p id="resultCount"></p>
+    <!-- CREATE VIDEO -->
+    <section class="panel creator-panel" id="creatorPanel" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">CREATE</p>
+          <h2>建立影片</h2>
+          <p class="section-description">
+            貼上 YouTube 連結，再依影片內容補上類別、成員與訓練資訊。
+          </p>
+        </div>
+
+        <button id="closeCreatorButton" class="close-button" type="button" aria-label="關閉建立影片表單">
+          ✕
+        </button>
+      </div>
+
+      <form id="videoForm" class="video-form">
+        <input id="sourceUnsortedId" type="hidden" />
+
+        <div class="form-grid">
+          <div class="field field-wide">
+            <label for="youtubeUrl">YouTube 連結 *</label>
+            <input
+              id="youtubeUrl"
+              type="url"
+              placeholder="https://www.youtube.com/watch?v=..."
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="videoDate">日期 *</label>
+            <input id="videoDate" type="date" required />
+          </div>
+
+          <div class="field">
+            <label for="videoTitle">影片標題</label>
+            <input id="videoTitle" type="text" placeholder="可留白，自動產生" />
+          </div>
+
+          <div class="field">
+            <label for="categorySelect">類別 *</label>
+            <select id="categorySelect" required>
+              <option value="">請選擇</option>
+              <option value="體能">體能</option>
+              <option value="Drill">Drill</option>
+              <option value="對抗">對抗</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- COMMON MEMBER AREA -->
+        <div class="subpanel">
+          <div class="subpanel-title-row">
+            <div>
+              <h3>哪些成員？</h3>
+              <p>所有影片類別都可以選擇參與成員。</p>
+            </div>
+          </div>
+
+          <div id="memberPicker" class="member-picker"></div>
+
+          <div class="inline-create">
+            <div class="field">
+              <label for="newMemberName">新增成員：名字</label>
+              <input id="newMemberName" type="text" placeholder="例如：Alice" />
+            </div>
+
+            <div class="field">
+              <label for="newMemberGender">性別</label>
+              <select id="newMemberGender">
+                <option value="">請選擇</option>
+                <option value="male">男性</option>
+                <option value="female">女性</option>
+              </select>
+            </div>
+
+            <button id="addMemberButton" class="secondary-button align-end" type="button">
+              新增成員
+            </button>
+          </div>
+
+          <p id="memberMessage" class="form-message"></p>
+        </div>
+
+        <!-- SCRIMMAGE -->
+        <div id="scrimmageFields" class="subpanel category-fields" hidden>
+          <div class="subpanel-title-row">
+            <div>
+              <h3>對抗設定</h3>
+              <p>選擇對抗人數與組別。</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="formatSelect">對抗形式 *</label>
+              <select id="formatSelect">
+                <option value="">請選擇</option>
+                <option value="2v2">2v2</option>
+                <option value="3v3">3v3</option>
+                <option value="4v4">4v4</option>
+                <option value="5v5">5v5</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="groupSelect">組別 / 對戰 *</label>
+              <select id="groupSelect"></select>
+            </div>
+          </div>
+
+          <div class="inline-create compact-create">
+            <div class="field">
+              <label for="newGroupName">新增組別 / 對戰名稱</label>
+              <input
+                id="newGroupName"
+                type="text"
+                placeholder="例如：第三組 vs 第四組"
+              />
+            </div>
+
+            <button id="addGroupButton" class="secondary-button align-end" type="button">
+              新增組別
+            </button>
+          </div>
+          <p id="groupMessage" class="form-message"></p>
+        </div>
+
+        <!-- DRILL -->
+        <div id="drillFields" class="subpanel category-fields" hidden>
+          <div class="subpanel-title-row">
+            <div>
+              <h3>Drill 設定</h3>
+              <p>可以選既有 Drill，或直接建立新的 Drill。</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="drillSelect">Drill *</label>
+            <select id="drillSelect"></select>
+          </div>
+
+          <div id="newDrillFields" class="new-drill-fields" hidden>
+            <div class="form-grid">
+              <div class="field">
+                <label for="newDrillName">Drill 名字 *</label>
+                <input id="newDrillName" type="text" placeholder="例如：Break Side 3-man Drill" />
+              </div>
+
+              <div class="field">
+                <label for="newDrillReps">Drill 次數 *</label>
+                <input id="newDrillReps" type="number" min="1" step="1" placeholder="例如：10" />
+              </div>
+
+              <div class="field field-wide">
+                <label for="newDrillDescription">Drill 描述 *</label>
+                <textarea
+                  id="newDrillDescription"
+                  rows="4"
+                  placeholder="描述目的、跑位方式、注意事項..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <p id="drillMessage" class="form-message"></p>
+        </div>
+
+        <div class="form-actions">
+          <p id="videoFormMessage" class="form-message"></p>
+          <div class="action-buttons">
+            <button id="cancelOrganizeButton" class="secondary-button" type="button" hidden>
+              取消整理
+            </button>
+            <button class="primary-button" type="submit">建立影片</button>
+          </div>
+        </div>
+      </form>
     </section>
 
-    <section id="videoGrid" class="video-grid" aria-live="polite"></section>
+    <!-- UNSORTED -->
+    <section class="panel unsorted-panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">INBOX</p>
+          <h2>未整理影片</h2>
+          <p class="section-description">
+            可以先把新影片丟進來，之後再由任何人補分類。
+          </p>
+        </div>
+        <span id="unsortedCount" class="count-pill"></span>
+      </div>
 
-    <section id="emptyState" class="empty-state" hidden>
-      <h3>找不到符合條件的影片</h3>
-      <p>試著清除篩選，或在 videos.js 新增更多影片。</p>
+      <div id="unsortedGrid" class="unsorted-grid"></div>
+
+      <div id="unsortedEmpty" class="empty-state compact" hidden>
+        <p>目前沒有待整理影片 🎉</p>
+      </div>
+    </section>
+
+    <!-- LIBRARY -->
+    <section class="panel library-panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">LIBRARY</p>
+          <h2>已整理影片</h2>
+        </div>
+      </div>
+
+      <section class="filters" aria-label="影片篩選">
+        <div class="field">
+          <label for="categoryFilter">類別</label>
+          <select id="categoryFilter">
+            <option value="all">全部</option>
+            <option value="體能">體能</option>
+            <option value="Drill">Drill</option>
+            <option value="對抗">對抗</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="formatFilter">對抗形式</label>
+          <select id="formatFilter">
+            <option value="all">全部</option>
+            <option value="2v2">2v2</option>
+            <option value="3v3">3v3</option>
+            <option value="4v4">4v4</option>
+            <option value="5v5">5v5</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="groupFilter">組別</label>
+          <select id="groupFilter">
+            <option value="all">全部</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="playerFilter">成員</label>
+          <select id="playerFilter">
+            <option value="all">全部</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="dateFilter">日期</label>
+          <select id="dateFilter">
+            <option value="all">全部日期</option>
+          </select>
+        </div>
+
+        <div class="field search-field">
+          <label for="searchInput">搜尋</label>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="搜尋影片、成員、Drill..."
+          />
+        </div>
+
+        <button id="resetFilters" class="reset-button" type="button">
+          清除篩選
+        </button>
+      </section>
+
+      <section class="results-header">
+        <h3>訓練影片</h3>
+        <p id="resultCount"></p>
+      </section>
+
+      <section id="videoGrid" aria-live="polite"></section>
+
+      <section id="emptyState" class="empty-state" hidden>
+        <h3>找不到符合條件的影片</h3>
+        <p>試著清除篩選。</p>
+      </section>
     </section>
   </main>
 
