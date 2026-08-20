@@ -1,4 +1,5 @@
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 :root {
   --bg:#f5f7f8; --surface:#fff; --surface-soft:#f9fafb; --text:#17202a; --muted:#6b7480;
   --border:#dfe4e8; --accent:#176b59; --accent-soft:#e6f3ef; --warning:#936300; --warning-soft:#fff4d2;
