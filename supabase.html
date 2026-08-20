@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Frisbee training video library" />
+  <title>Frisbee Training · Supabase</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="supabase.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-row">
+      <div>
+        <p class="eyebrow">ULTIMATE FRISBEE</p>
+        <h1>Frisbee Training</h1>
+        <p class="subtitle">建立、分類、整理日常訓練與對抗影片。</p>
+      </div>
+      <div class="auth-box">
+        <div id="signedOutUI">
+          <button id="googleLoginButton" class="primary-button" type="button">使用 Google 登入</button>
+        </div>
+        <div id="signedInUI" hidden>
+          <div class="user-row">
+            <img id="userAvatar" class="avatar" alt="" hidden />
+            <div>
+              <strong id="userName">User</strong>
+              <div class="role-line"><span id="roleBadge" class="role-badge">viewer</span></div>
+            </div>
+          </div>
+          <button id="signOutButton" class="secondary-button small-button" type="button">登出</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="passphrasePanel" class="panel passphrase-panel" hidden>
+      <div>
+        <p class="eyebrow">CONTRIBUTOR ACCESS</p>
+        <h2>輸入通關密語</h2>
+        <p class="section-description">Google 登入後，再通過密語即可投稿影片、成員與 Drill。所有投稿仍需審核。</p>
+      </div>
+      <div class="passphrase-row">
+        <input id="passphraseInput" type="password" placeholder="通關密語" autocomplete="current-password" />
+        <button id="verifyPassphraseButton" class="primary-button" type="button">驗證</button>
+      </div>
+      <p id="passphraseMessage" class="form-message"></p>
+    </section>
+
+    <section class="create-launcher">
+      <button id="openCreatorButton" class="add-video-button" type="button" hidden>＋ 新增影片</button>
+    </section>
+
+    <section class="panel creator-panel" id="creatorPanel" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SUBMIT</p>
+          <h2>投稿影片</h2>
+          <p class="section-description">投稿後先進入 Pending，由 Approver / Admin 審核後才公開。</p>
+        </div>
+        <button id="closeCreatorButton" class="close-button" type="button" aria-label="關閉表單">✕</button>
+      </div>
+
+      <form id="videoForm" class="video-form">
+        <div class="form-grid">
+          <div class="field field-wide">
+            <label for="youtubeUrl">YouTube 連結 *</label>
+            <input id="youtubeUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." required />
+          </div>
+          <div class="field">
+            <label for="videoDate">日期 *</label>
+            <input id="videoDate" type="date" required />
+          </div>
+          <div class="field">
+            <label for="videoTitle">影片標題</label>
+            <input id="videoTitle" type="text" placeholder="可留白，自動產生" />
+          </div>
+          <div class="field">
+            <label for="categorySelect">類別 *</label>
+            <select id="categorySelect" required>
+              <option value="">請選擇</option>
+              <option value="體能">體能</option>
+              <option value="Drill">Drill</option>
+              <option value="對抗">對抗</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="subpanel">
+          <div class="subpanel-title-row"><div><h3>哪些成員？</h3><p>可選既有成員，也可以送出新成員申請。</p></div></div>
+          <div id="memberPicker" class="member-picker"></div>
+          <div class="inline-create">
+            <div class="field"><label for="newMemberName">新增成員：名字</label><input id="newMemberName" type="text" placeholder="例如：Alice" /></div>
+            <div class="field"><label for="newMemberGender">性別</label><select id="newMemberGender"><option value="">請選擇</option><option value="male">男性</option><option value="female">女性</option></select></div>
+            <button id="addMemberButton" class="secondary-button align-end" type="button">送出新成員</button>
+          </div>
+          <p id="memberMessage" class="form-message"></p>
+        </div>
+
+        <div id="scrimmageFields" class="subpanel" hidden>
+          <div class="subpanel-title-row"><div><h3>對抗設定</h3><p>2v2–5v5，並選擇組別 / 對戰。</p></div></div>
+          <div class="form-grid">
+            <div class="field"><label for="formatSelect">對抗形式 *</label><select id="formatSelect"><option value="">請選擇</option><option value="2v2">2v2</option><option value="3v3">3v3</option><option value="4v4">4v4</option><option value="5v5">5v5</option></select></div>
+            <div class="field"><label for="groupSelect">組別 / 對戰 *</label><select id="groupSelect"><option value="">請選擇</option></select></div>
+          </div>
+          <div class="inline-create compact-create">
+            <div class="field"><label for="newGroupName">新增組別 / 對戰名稱</label><input id="newGroupName" type="text" placeholder="例如：第三組 vs 第四組" /></div>
+            <button id="addGroupButton" class="secondary-button align-end" type="button">送出新組別</button>
+          </div>
+          <p id="groupMessage" class="form-message"></p>
+        </div>
+
+        <div id="drillFields" class="subpanel" hidden>
+          <div class="subpanel-title-row"><div><h3>Drill 設定</h3><p>選既有 Drill，或送出新 Drill 申請。</p></div></div>
+          <div class="field"><label for="drillSelect">Drill *</label><select id="drillSelect"><option value="">請選擇</option></select></div>
+          <div id="newDrillFields" hidden>
+            <div class="form-grid">
+              <div class="field"><label for="newDrillName">Drill 名字 *</label><input id="newDrillName" type="text" /></div>
+              <div class="field"><label for="newDrillReps">Drill 次數 *</label><input id="newDrillReps" type="number" min="1" step="1" /></div>
+              <div class="field field-wide"><label for="newDrillDescription">Drill 描述 *</label><textarea id="newDrillDescription" rows="4"></textarea></div>
+            </div>
+            <button id="createDrillButton" class="secondary-button" type="button">送出新 Drill</button>
+          </div>
+          <p id="drillMessage" class="form-message"></p>
+        </div>
+
+        <div class="form-actions">
+          <p id="videoFormMessage" class="form-message"></p>
+          <div class="action-buttons">
+            <button id="cancelCreatorButton" class="secondary-button" type="button">取消</button>
+            <button class="primary-button" type="submit">送出影片審核</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section id="mySubmissionsPanel" class="panel" hidden>
+      <div class="section-heading"><div><p class="eyebrow">MY SUBMISSIONS</p><h2>我的投稿</h2></div></div>
+      <div id="mySubmissionsGrid" class="review-grid"></div>
+    </section>
+
+    <section id="reviewPanel" class="panel" hidden>
+      <div class="section-heading">
+        <div><p class="eyebrow">MODERATION</p><h2>待審核</h2><p class="section-description">先審成員 / Drill / 組別，再審相關影片。</p></div>
+        <span id="reviewCount" class="count-pill"></span>
+      </div>
+      <div id="reviewSections" class="review-sections"></div>
+    </section>
+
+    <section class="panel library-panel">
+      <div class="section-heading"><div><p class="eyebrow">LIBRARY</p><h2>已核准影片</h2></div></div>
+      <section class="filters" aria-label="影片篩選">
+        <div class="field"><label for="categoryFilter">類別</label><select id="categoryFilter"><option value="all">全部</option><option value="體能">體能</option><option value="Drill">Drill</option><option value="對抗">對抗</option></select></div>
+        <div class="field"><label for="formatFilter">對抗形式</label><select id="formatFilter"><option value="all">全部</option><option value="2v2">2v2</option><option value="3v3">3v3</option><option value="4v4">4v4</option><option value="5v5">5v5</option></select></div>
+        <div class="field"><label for="groupFilter">組別</label><select id="groupFilter"><option value="all">全部</option></select></div>
+        <div class="field"><label for="playerFilter">成員</label><select id="playerFilter"><option value="all">全部</option></select></div>
+        <div class="field"><label for="dateFilter">日期</label><select id="dateFilter"><option value="all">全部日期</option></select></div>
+        <div class="field search-field"><label for="searchInput">搜尋</label><input id="searchInput" type="search" placeholder="搜尋影片、成員、Drill..." /></div>
+        <button id="resetFilters" class="reset-button" type="button">清除篩選</button>
+      </section>
+      <section class="results-header"><h3>訓練影片</h3><p id="resultCount"></p></section>
+      <section id="videoGrid" aria-live="polite"></section>
+      <section id="emptyState" class="empty-state" hidden><h3>目前沒有符合條件的影片</h3><p>可能還沒有影片通過審核。</p></section>
+    </section>
+  </main>
+
+  <footer><div class="container"><p>FrisbeeTraining · GitHub Pages + Supabase</p></div></footer>
+  <script type="module" src="supabase-app.js"></script>
+</body>
+</html>
