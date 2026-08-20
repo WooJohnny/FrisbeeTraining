@@ -1,3 +1,12 @@
+// OAuth callback fallback: if Supabase returns to the legacy homepage,
+// forward the auth fragment to the Supabase app so it can finish login.
+if (
+  window.location.hash.includes("access_token=") ||
+  window.location.hash.includes("error_description=")
+) {
+  window.location.replace(`supabase.html${window.location.hash}`);
+}
+
 // =====================================================
 // 預設資料
 // 之後可以直接修改這個檔案，或用網頁上的「建立影片」。
